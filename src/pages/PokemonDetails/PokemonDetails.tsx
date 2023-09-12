@@ -23,6 +23,12 @@ function PokemonDetails(props: PokemonDetailsProps) {
   const pokemon = pokemonList.find(
     ({ id }) => id === parseInt(idParam as string, 10),
   ) as PokemonType;
+
+  // Verifique se o Pokémon foi encontrado antes de acessar suas propriedades
+  if (!pokemon) {
+    return <div>Pokémon not found</div>; // Ou qualquer mensagem de erro que você desejar
+  }
+
   const isFavorite = favoritePokemonIdsObj[parseInt(idParam as string)];
 
   return (
@@ -47,5 +53,6 @@ function PokemonDetails(props: PokemonDetailsProps) {
     </section>
   );
 }
+
 
 export default PokemonDetails;
