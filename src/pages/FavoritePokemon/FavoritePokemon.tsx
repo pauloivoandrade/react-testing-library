@@ -11,7 +11,7 @@ function FavoritePokemon(props: FavoritePokemonProps) {
 
   return (
     <div className='favorite-pokemon'>
-      <h2>Favorite Pokémon</h2>
+      <h2 data-testid="favorite-pokemon-title">Favorite Pokémon</h2>
       <div className="favorite-container">
         {isEmpty ? (
           <p>{`No favorite Pokémon found`}</p>

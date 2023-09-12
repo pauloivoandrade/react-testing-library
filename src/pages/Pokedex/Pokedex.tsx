@@ -51,7 +51,7 @@ function Pokedex(props: PokedexProps) {
 
   return (
     <div className="pokedex">
-      <h2>{`Encountered Pokémon`}</h2>
+      <h2 data-testid='Encountered Pokémon'>{`Encountered Pokémon`}</h2>
       <div className='content-container'>
         <div>
           <Pokemon
