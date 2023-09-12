@@ -15,6 +15,11 @@ describe('Teste o componente <App.tsx />', () => {
     const aboutLink = screen.getByRole('link', { name: 'About' });
     expect(aboutLink).toBeInTheDocument();
   });
-  test('', () => {});
+  test('Teste se o topo da aplicação contém link deve ter o texto Favorite Pokémon', () => {
+    render(<App />, { wrapper: BrowserRouter });
+
+    const favoritePokémonLink = screen.getByRole('link', { name: 'Favorite Pokémon' });
+    expect(favoritePokémonLink).toBeInTheDocument();
+  });
   test('', () => {});
 });
