@@ -11,13 +11,13 @@ function App() {
         <header>
           <h1>Pokédex</h1>
           <nav>
-            <Link className="link" to="/">
+            <Link className="link" data-testid="home-link" to="/">
               {`Home`}
             </Link>
-            <Link className="link" to="/about">
+            <Link className="link" data-testid="about-link" to="/about">
               {`About`}
             </Link>
-            <Link className="link" to="/favorites">
+            <Link className="link" data-testid="favorites-link" to="/favorites">
               {`Favorite Pokémon`}
             </Link>
           </nav>
