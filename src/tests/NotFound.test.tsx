@@ -1,8 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter, MemoryRouter, Route, MemoryRouterProps } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
 import { NotFound } from '../pages';
-import { PokemonType } from '../types';
 
 describe('Teste o componente <NotFound.tsx />', () => {
   test('Teste se a página contém um heading h2 com o texto Page requested not found', () => {
