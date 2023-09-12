@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
 import App from '../App';
 
 describe('Teste o componente <App.tsx />', () => {
@@ -21,5 +22,10 @@ describe('Teste o componente <App.tsx />', () => {
     const favoritePokémonLink = screen.getByRole('link', { name: 'Favorite Pokémon' });
     expect(favoritePokémonLink).toBeInTheDocument();
   });
-  test('', () => {});
+  it('Navega para a pagina inicial ao clicar no link Home', async () => {
+    render(<App />, { wrapper: BrowserRouter });
+    const homeLink = screen.getByRole('link', { name: 'Home' });
+    await userEvent.click(homeLink);
+    expect(screen.getByText(/Encountered Pokémon/i)).toBeInTheDocument();
+  });
 });
