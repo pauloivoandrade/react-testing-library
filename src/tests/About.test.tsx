@@ -22,5 +22,10 @@ describe('Testes do componente <About.tsx />', () => {
     const paragraphs = screen.getAllByText(/./, { selector: 'p' });
     expect(paragraphs.length).toBeGreaterThanOrEqual(2);
   });
-  test('', () => {});
+  test('Teste se a página contém a seguinte imagem de uma Pokédex', () => {
+    render(<About />, { wrapper: BrowserRouter });
+
+    const imgData = screen.getByRole('img');
+    expect(imgData).toHaveAttribute('src', 'https://cdn2.bulbagarden.net/upload/thumb/8/86/Gen_I_Pok%C3%A9dex.png/800px-Gen_I_Pok%C3%A9dex.png');
+  });
 });
