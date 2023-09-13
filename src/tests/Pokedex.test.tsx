@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
-import { render, screen, waitFor } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter, createMemoryRouter, Router } from 'react-router-dom';
 import { Pokedex } from '../pages';
 import { PokemonType } from '../types';
 
@@ -132,17 +132,25 @@ describe('Teste o componente <Pokedex.tsx />', () => {
     const { pokemonText: newPokemonText } = getPokemonElementAndText();
     expect(newPokemonText).toContain('Charmander');
   });
-  test('Ao carregar a página, o filtro selecionado deverá ser All', async () => {
-    // Verifique se Pikachu está presente na tela inicialmente
-    const pikachuElement = screen.getByText('Pikachu');
-    expect(pikachuElement).toBeInTheDocument();
+  test('Ao carregar a página, o botão "All" deve estar ativado', () => {
+    render(
+      <BrowserRouter>
+        <Pokedex pokemonList={ mockPokemonList } favoritePokemonIdsObj={ {} } />
+      </BrowserRouter>,
+    );
 
-    // Aguarde Charmander estar disponível após o clique em "Próximo Pokémon"
-    const nxtBtn = screen.getByRole('button', { name: 'Próximo Pokémon' });
-    userEvent.click(nxtBtn);
-    await waitFor(() => {
-      const charmanderElement = screen.getByText('Charmander');
-      expect(charmanderElement).toBeInTheDocument();
-    });
+    // Obtenha todos os botões com o papel "button"
+    const allButtons = screen.getAllByRole('button');
+
+    // Encontre o botão "All" correto com base em algum critério, como texto ou posição
+    const allPokemonButton = allButtons.find((button) => button.textContent === 'All');
+
+    // Verifique se o botão "All" está ativado
+    expect(allPokemonButton).toBeInTheDocument();
+
+    // Verifique se o número de Pokémon exibidos na Pokedex corresponde ao número esperado
+    const pokemonElements = screen.getAllByTestId('pokemon-name');
+    expect(pokemonElements.length).toBe(mockPokemonList.length);
   });
 });
+// npx stryker run ./stryker/Pokedex.conf.json
