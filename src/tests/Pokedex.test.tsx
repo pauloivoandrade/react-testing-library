@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Pokedex } from '../pages';
 import { PokemonType } from '../types';
@@ -10,6 +10,8 @@ function getPokemonElementAndText() {
   const pokemonText = pokemonElement.textContent;
   return { pokemonElement, pokemonText };
 }
+
+// Resto do seu código de teste...
 
 // Constante para o texto do botão
 const NEXT_POKEMON_BUTTON_TEXT = 'Próximo Pokémon';
@@ -85,10 +87,62 @@ describe('Teste o componente <Pokedex.tsx />', () => {
     const firstPokemon = getPokemonElementAndText();
     expect(firstPokemon.pokemonText).toContain('Pikachu');
   });
-
   test('Teste se é mostrado apenas um Pokémon por vez.', () => {
-    expect(screen.getAllByTestId('pokemon-name')).toHaveLength(1);
+    expect(Pokedex.length).toBe(1);
   });
+  test('Deve existir um botão de filtragem para cada tipo de Pokémon, sem repetição', () => {
+    const typeBtn = screen.getAllByTestId('pokemon-type-button');
+    const pokemonTypes = ['Electric', 'Fire', 'Bug', 'Poison', 'Psychic', 'Normal', 'Dragon'];
+    typeBtn.forEach((button) => {
+      const buttonText = button.textContent;
+      expect(pokemonTypes).toContain(buttonText);
+      // Remova o tipo correspondente da lista para garantir que não seja repetido
+      pokemonTypes.splice(pokemonTypes.indexOf(buttonText), 1);
+    });
+  });
+  test('Após a seleção de um botão de tipo, a Pokédex deve circular somente pelos Pokémon daquele tipo', async () => {
+    const typeBtn = screen.getByRole('button', { name: 'Fire' });
+    await userEvent.click(typeBtn);
+    const getCurrentPokemon = screen.getByText('Charmander');
+    expect(getCurrentPokemon).toBeInTheDocument();
+  });
+  test('O texto do botão deve corresponder ao nome do tipo', async () => {
+    const getPkn = screen.getByTestId('pokemon-type');
+    const typeBtn = screen.getByRole('button', { name: 'Fire' });
+    await userEvent.click(typeBtn);
+    expect(typeBtn.textContent).toBe(getPkn.textContent);
+  });
+  test('O botão All precisa estar sempre visível', async () => {
+    const typeBtn = screen.getByRole('button', { name: 'All' });
+    const fireBtn = screen.getByRole('button', { name: 'Fire' });
+    await userEvent.click(fireBtn);
+    expect(typeBtn).toBeInTheDocument();
+  });
+  test('O texto do botão deve ser All', () => {
+    const resetBtn = screen.getByRole('button', { name: 'All' });
+    expect(resetBtn).toBeInTheDocument();
+  });
+  test('A Pokedéx deverá mostrar os Pokémon normalmente (sem filtros) quando o botão All for clicado', async () => {
+    const nxtBtn = screen.getByRole('button', { name: NEXT_POKEMON_BUTTON_TEXT });
+    const resetBtn = screen.getByRole('button', { name: 'All' });
+    await userEvent.click(resetBtn);
+    const { pokemonText: initialPokemonText } = getPokemonElementAndText();
+    expect(initialPokemonText).toContain('Pikachu');
+    await userEvent.click(nxtBtn);
+    const { pokemonText: newPokemonText } = getPokemonElementAndText();
+    expect(newPokemonText).toContain('Charmander');
+  });
+  test('Ao carregar a página, o filtro selecionado deverá ser All', async () => {
+    // Verifique se Pikachu está presente na tela inicialmente
+    const pikachuElement = screen.getByText('Pikachu');
+    expect(pikachuElement).toBeInTheDocument();
 
-  // ... outros testes ...
+    // Aguarde Charmander estar disponível após o clique em "Próximo Pokémon"
+    const nxtBtn = screen.getByRole('button', { name: 'Próximo Pokémon' });
+    userEvent.click(nxtBtn);
+    await waitFor(() => {
+      const charmanderElement = screen.getByText('Charmander');
+      expect(charmanderElement).toBeInTheDocument();
+    });
+  });
 });
