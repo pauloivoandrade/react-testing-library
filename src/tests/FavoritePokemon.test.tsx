@@ -1,8 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter, MemoryRouter, Route, MemoryRouterProps } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
+import { BrowserRouter, MemoryRouter, MemoryRouterProps } from 'react-router-dom';
 import { PokemonDetails, FavoritePokemon } from '../pages';
-import { PokemonType } from '../types';
 
 const examplePokemon = {
   id: 25,
@@ -12,7 +10,6 @@ const examplePokemon = {
     value: '6.0',
     measurementUnit: 'kg',
   },
-  // Adicione outras propriedades necessárias aqui
 };
 
 describe('Teste o componente <FavoritePokemon.tsx />', () => {
@@ -28,7 +25,7 @@ describe('Teste o componente <FavoritePokemon.tsx />', () => {
       initialEntries: [`/pokemon/${examplePokemon.id}`],
     };
 
-    // Renderize o componente PokemonDetails dentro de uma rota com o MemoryRouter
+    // Renderizar o componente PokemonDetails dentro de uma rota com o MemoryRouter
     render(
       <MemoryRouter { ...routeProps }>
         <PokemonDetails
@@ -39,12 +36,12 @@ describe('Teste o componente <FavoritePokemon.tsx />', () => {
       </MemoryRouter>,
     );
 
-    // Agora renderize o componente FavoritePokemon com a lista de Pokémon favoritos
+    // Agora renderizar o componente FavoritePokemon com a lista de Pokémon favoritos
     const favoritesRouteProps: MemoryRouterProps = {
       initialEntries: ['/favorites'],
     };
 
-    // Renderize o componente FavoritePokemon com a lista de Pokémon favoritos
+    // Renderizar o componente FavoritePokemon com a lista de Pokémon favoritos
     render(
       <MemoryRouter { ...favoritesRouteProps }>
         <FavoritePokemon
@@ -54,7 +51,7 @@ describe('Teste o componente <FavoritePokemon.tsx />', () => {
       </MemoryRouter>,
     );
 
-    // Verifique se o nome do Pokémon é exibido
+    // Verificar se o nome do Pokémon é exibido
     const favPok = screen.getByText('Pikachu');
     expect(favPok).toBeInTheDocument();
   });

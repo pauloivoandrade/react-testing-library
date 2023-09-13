@@ -4,7 +4,17 @@ import { BrowserRouter } from 'react-router-dom';
 import { Pokedex } from '../pages';
 import { PokemonType } from '../types';
 
+// Função auxiliar para obter o elemento do Pokémon e seu texto
+function getPokemonElementAndText() {
+  const pokemonElement = screen.getByTestId('pokemon-name');
+  const pokemonText = pokemonElement.textContent;
+  return { pokemonElement, pokemonText };
+}
+
 // Resto do seu código de teste...
+
+// Constante para o texto do botão
+const NEXT_POKEMON_BUTTON_TEXT = 'Próximo Pokémon';
 
 // Mock de dados para uso no teste
 const mockPokemonList: PokemonType[] = [
@@ -30,61 +40,51 @@ const mockPokemonList: PokemonType[] = [
   },
   // Adicione mais pokémons conforme necessário
 ];
+
 describe('Teste o componente <Pokedex.tsx />', () => {
-  test('Teste se a página contém um heading h2 com o texto Encountered Pokémon', () => {
-    // Renderize o componente Pokedex dentro de um BrowserRouter
+  beforeEach(() => {
     render(
       <BrowserRouter>
         <Pokedex pokemonList={ mockPokemonList } favoritePokemonIdsObj={ {} } />
       </BrowserRouter>,
     );
+  });
 
+  test('Teste se a página contém um heading h2 com o texto Encountered Pokémon', () => {
     // Verifique se o elemento com o texto "Encountered Pokémon" está presente na tela
     const encounteredTxt = screen.getByText('Encountered Pokémon', { selector: 'h2' });
     expect(encounteredTxt).toBeInTheDocument();
   });
+
   test('O botão deve conter o texto Próximo Pokémon', () => {
-    render(
-      <BrowserRouter>
-        <Pokedex pokemonList={ mockPokemonList } favoritePokemonIdsObj={ {} } />
-      </BrowserRouter>,
-    );
-    const nxtBtn = screen.getByRole('button', { name: 'Próximo Pokémon' });
+    const nxtBtn = screen.getByRole('button', { name: NEXT_POKEMON_BUTTON_TEXT });
     expect(nxtBtn).toBeInTheDocument();
   });
+
   test('Os próximos Pokémon da lista devem ser mostrados, um a um, ao clicar sucessivamente no botão.', async () => {
-    render(
-      <BrowserRouter>
-        <Pokedex pokemonList={ mockPokemonList } favoritePokemonIdsObj={ {} } />
-      </BrowserRouter>,
-    );
-    const nxtBtn = screen.getByRole('button', { name: 'Próximo Pokémon' });
-    const currentPokemon = screen.getByTestId('pokemon-name').textContent;
-    expect(currentPokemon).toContain('Pikachu');
+    const nxtBtn = screen.getByRole('button', { name: NEXT_POKEMON_BUTTON_TEXT });
+    const { pokemonText: initialPokemonText } = getPokemonElementAndText();
+    expect(initialPokemonText).toContain('Pikachu');
     await userEvent.click(nxtBtn);
-    const newCurrentPokemon = screen.getByTestId('pokemon-name').textContent;
-    expect(newCurrentPokemon).toContain('Charmander');
+    const { pokemonText: newPokemonText } = getPokemonElementAndText();
+    expect(newPokemonText).toContain('Charmander');
   });
+
   test('O primeiro Pokémon da lista deve ser mostrado ao clicar no botão se estiver no último Pokémon da lista', async () => {
-    render(
-      <BrowserRouter>
-        <Pokedex pokemonList={ mockPokemonList } favoritePokemonIdsObj={ {} } />
-      </BrowserRouter>,
-    );
-    const nxtBtn = screen.getByRole('button', { name: 'Próximo Pokémon' });
+    const nxtBtn = screen.getByRole('button', { name: NEXT_POKEMON_BUTTON_TEXT });
 
     // Avance até o último Pokémon da lista
     await userEvent.click(nxtBtn);
 
     // Verifique se o último Pokémon da lista (Charmander) está na tela
-    const lastPokemon = screen.getByTestId('pokemon-name').textContent;
-    expect(lastPokemon).toContain('Charmander');
+    const lastPokemon = getPokemonElementAndText();
+    expect(lastPokemon.pokemonText).toContain('Charmander');
 
     // Clique novamente no botão "Próximo Pokémon"
     await userEvent.click(nxtBtn);
 
     // Verifique se o primeiro Pokémon da lista (Pikachu) está na tela novamente
-    const firstPokemon = screen.getByTestId('pokemon-name').textContent;
-    expect(firstPokemon).toContain('Pikachu');
+    const firstPokemon = getPokemonElementAndText();
+    expect(firstPokemon.pokemonText).toContain('Pikachu');
   });
 });
