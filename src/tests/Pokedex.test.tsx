@@ -1,9 +1,8 @@
 import userEvent from '@testing-library/user-event';
-import { getByTestId, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Pokedex } from '../pages';
 import { PokemonType } from '../types';
-import { toBeInTheDocument } from '@testing-library/jest-dom/matchers';
 
 // Função auxiliar para obter o elemento do Pokémon e seu texto
 function getPokemonElementAndText() {
@@ -107,5 +106,5 @@ describe('Teste o componente <Pokedex.tsx />', () => {
     const getCurrentPokemon = screen.getByText('Charmander');
     expect(getCurrentPokemon).toBeInTheDocument();
   });
-
+  test('', () => {});
 });
