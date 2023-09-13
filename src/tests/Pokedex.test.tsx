@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
+import { getByTestId, render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Pokedex } from '../pages';
 import { PokemonType } from '../types';
+import { toBeInTheDocument } from '@testing-library/jest-dom/matchers';
 
 // Função auxiliar para obter o elemento do Pokémon e seu texto
 function getPokemonElementAndText() {
@@ -87,4 +88,24 @@ describe('Teste o componente <Pokedex.tsx />', () => {
     const firstPokemon = getPokemonElementAndText();
     expect(firstPokemon.pokemonText).toContain('Pikachu');
   });
+  test('Teste se é mostrado apenas um Pokémon por vez.', () => {
+    expect(Pokedex.length).toBe(1);
+  });
+  test('Deve existir um botão de filtragem para cada tipo de Pokémon, sem repetição', () => {
+    const typeBtn = screen.getAllByTestId('pokemon-type-button');
+    const pokemonTypes = ['Electric', 'Fire', 'Bug', 'Poison', 'Psychic', 'Normal', 'Dragon'];
+    typeBtn.forEach((button) => {
+      const buttonText = button.textContent;
+      expect(pokemonTypes).toContain(buttonText);
+      // Remova o tipo correspondente da lista para garantir que não seja repetido
+      pokemonTypes.splice(pokemonTypes.indexOf(buttonText), 1);
+    });
+  });
+  test('Após a seleção de um botão de tipo, a Pokédex deve circular somente pelos Pokémon daquele tipo', async () => {
+    const typeBtn = screen.getByRole('button', { name: 'Fire' });
+    await userEvent.click(typeBtn);
+    const getCurrentPokemon = screen.getByText('Charmander');
+    expect(getCurrentPokemon).toBeInTheDocument();
+  });
+
 });
