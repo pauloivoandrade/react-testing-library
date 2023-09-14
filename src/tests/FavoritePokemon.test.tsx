@@ -1,58 +1,35 @@
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter, MemoryRouter, MemoryRouterProps } from 'react-router-dom';
-import { PokemonDetails, FavoritePokemon } from '../pages';
+import { screen } from '@testing-library/react';
+import renderWithRouter from '../renderWithRouter';
 
-const examplePokemon = {
-  id: 25,
-  name: 'Pikachu',
-  type: 'Electric',
-  averageWeight: {
-    value: '6.0',
-    measurementUnit: 'kg',
-  },
-};
+import App from '../App';
+import { FavoritePokemon } from '../pages';
 
 describe('Teste o componente <FavoritePokemon.tsx />', () => {
-  test('É exibida na tela a mensagem No favorite pokemon found caso a pessoa não tenha Pokémon favorito', () => {
-    render(<FavoritePokemon />, { wrapper: BrowserRouter });
+  test('Exibe a mensagem "No favorite Pokémon found" quando não há Pokémon favoritados', () => {
+    renderWithRouter(<App />, { route: '/favorites' });
 
-    const noFavoriteMsg = screen.getByText('No favorite Pokémon found');
-    expect(noFavoriteMsg).toBeInTheDocument();
+    const notFoundFavorite = screen.getByText('No favorite Pokémon found');
+    expect(notFoundFavorite).toBeInTheDocument();
   });
 
-  test('Apenas são exibidos os Pokémon favoritados.', async () => {
-    const routeProps: MemoryRouterProps = {
-      initialEntries: [`/pokemon/${examplePokemon.id}`],
-    };
+  test('Exibe apenas os Pokémon favoritados quando existem', () => {
+    const pokemonList = [{
+      id: 25,
+      name: 'Pikachu',
+      type: 'Electric',
+      averageWeight: {
+        value: '6.0',
+        measurementUnit: 'kg',
+      },
+    }];
+    renderWithRouter(<FavoritePokemon pokemonList={ pokemonList } />);
 
-    // Renderizar o componente PokemonDetails dentro de uma rota com o MemoryRouter
-    render(
-      <MemoryRouter { ...routeProps }>
-        <PokemonDetails
-          favoritePokemonIdsObj={ { [examplePokemon.id]: true } }
-          onUpdateFavoritePokemon={ () => {} }
-          pokemonList={ [examplePokemon] }
-        />
-      </MemoryRouter>,
-    );
+    pokemonList.forEach((pokemon) => {
+      const pokemonId = screen.getByText(pokemon.name);
+      expect(pokemonId).toBeInTheDocument();
+    });
 
-    // Agora renderizar o componente FavoritePokemon com a lista de Pokémon favoritos
-    const favoritesRouteProps: MemoryRouterProps = {
-      initialEntries: ['/favorites'],
-    };
-
-    // Renderizar o componente FavoritePokemon com a lista de Pokémon favoritos
-    render(
-      <MemoryRouter { ...favoritesRouteProps }>
-        <FavoritePokemon
-          pokemonList={ [examplePokemon] } // Use o mock de dados aqui
-          favoritePokemonIdsObj={ { [examplePokemon.id]: true } }
-        />
-      </MemoryRouter>,
-    );
-
-    // Verificar se o nome do Pokémon é exibido
-    const favPok = screen.getByText('Pikachu');
-    expect(favPok).toBeInTheDocument();
+    const notFoundFavorite = screen.queryByText('No favorite Pokémon found');
+    expect(notFoundFavorite).not.toBeInTheDocument();
   });
 });
