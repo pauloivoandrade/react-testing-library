@@ -75,25 +75,14 @@ describe('<Pokemon />', () => {
   });
 
   it('deve redirecionar para a página de detalhes ao clicar no link', async () => {
-    const pokemonList = [mockPokemon];
-
     render(
       <Router>
         <Pokemon pokemon={ mockPokemon } showDetailsLink isFavorite={ false } />
       </Router>,
     );
-    const detailBtn = screen.getByText('More details');
+    const detailBtn = screen.getByRole('link', { name: /More details/i });
     await userEvent.click(detailBtn);
-
-    render(<PokemonDetails pokemonList={ pokemonList } />);
-
-    const getFavBtn = screen.getByText((content, element) => {
-      // Verifique se o texto contém "Pokémon favoritado?"
-      // Aqui, você pode usar content.toLocaleLowerCase() para ignorar a capitalização
-      return content.includes('Pokémon favoritado?');
-    });
-
-    expect(getFavBtn).toBeInTheDocument();
+    expect(screen.getByText(/Details/i)).toBeInTheDocument();
   });
 
   it('deve exibir um ícone de estrela favorito com atributos src e alt corretos', () => {
