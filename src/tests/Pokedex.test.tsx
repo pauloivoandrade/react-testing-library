@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { BrowserRouter, createMemoryRouter, Router } from 'react-router-dom';
 import { Pokedex } from '../pages';
-import { PokemonType } from '../types';
+import { PokemonType, AverageWeightType } from '../types';
 
 // Função auxiliar para obter o elemento do Pokémon e seu texto
 function getPokemonElementAndText() {
@@ -131,11 +131,17 @@ describe('Teste o componente <Pokedex.tsx />', () => {
     const { pokemonText: newPokemonText } = getPokemonElementAndText();
     expect(newPokemonText).toContain('Charmander');
   });
-  test('Ao carregar a página, o botão "All" deve estar ativado', () => {
-    // const allBtn = screen.getByRole('button', { name: 'All' });
-
-    const pokemonElements = screen.getAllByTestId('pokemon-name');
-    expect(pokemonElements.length).toBe(pokemonElements.length);
+  test('Ao carregar a página, o botão "All" deve estar ativado', async () => {
+    const allButtons = screen.getByRole('button', { name: 'All' });
+    expect(allButtons).toBeInTheDocument();
+    const typeBtn2 = screen.getByRole('button', { name: 'Bug' });
+    await userEvent.click(typeBtn2);
+    const getCurrentPokemon2 = screen.getByText('Caterpie');
+    expect(getCurrentPokemon2).toBeInTheDocument();
+    await userEvent.click(allButtons);
+    expect(screen.getByText('Pikachu')).toBeInTheDocument();
+    // const pokemonElements = screen.getAllByTestId('pokemon-name');
+    // expect(pokemonElements.length).toBe(pokemonElements.length);
   });
 });
-// // npx stryker run ./stryker/Pokedex.conf.json
+// qnpx stryker run ./stryker/Pokedex.conf.json
