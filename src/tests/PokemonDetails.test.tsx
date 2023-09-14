@@ -1,9 +1,6 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
-import { toBeInTheDocument } from '@testing-library/jest-dom/matchers';
-import { Pokemon } from '../components';
 import { PokemonDetails } from '../pages';
 
 const mockPokemon = {
@@ -21,15 +18,10 @@ describe(' Teste o componente <PokemonDetails.tsx />', () => {
   test('Teste se o nome do Pokémon é mostrado na tela:', () => {
     render(
       <Router>
-        <PokemonDetails pokemon={ pokemonList[0] } pokemonList={ pokemonList } />
+        <PokemonDetails pokemon={ mockPokemon } />
       </Router>,
     );
-
-    const getPokemonName = screen.getByText((content, element) => {
-      // Verifica se o texto contém "Pikachu" em algum lugar, ignorando a capitalização
-      return content.includes('Pikachu');
-    });
-
+    const getPokemonName = screen.getByText(/mockPokemon.name/i);
     expect(getPokemonName).toBeInTheDocument();
   });
 });

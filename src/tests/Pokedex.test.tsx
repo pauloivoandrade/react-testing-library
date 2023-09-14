@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { BrowserRouter, createMemoryRouter, Router } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { Pokedex } from '../pages';
-import { PokemonType, AverageWeightType } from '../types';
+import { PokemonType } from '../types';
 
 // Função auxiliar para obter o elemento do Pokémon e seu texto
 function getPokemonElementAndText() {
@@ -132,7 +132,7 @@ describe('Teste o componente <Pokedex.tsx />', () => {
     expect(newPokemonText).toContain('Charmander');
   });
   test('Ao carregar a página, o botão "All" deve estar ativado', () => {
-    const allBtn = screen.getByRole('button', { name: 'All' });
+    // const allBtn = screen.getByRole('button', { name: 'All' });
 
     const pokemonElements = screen.getAllByTestId('pokemon-name');
     expect(pokemonElements.length).toBe(pokemonElements.length);
