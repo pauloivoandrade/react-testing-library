@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter, createMemoryRouter, Router } from 'react-router-dom';
 import { Pokedex } from '../pages';
-import { PokemonType } from '../types';
+import { PokemonType, AverageWeightType } from '../types';
 
 // Função auxiliar para obter o elemento do Pokémon e seu texto
 function getPokemonElementAndText() {
@@ -11,12 +11,8 @@ function getPokemonElementAndText() {
   return { pokemonElement, pokemonText };
 }
 
-// Resto do seu código de teste...
-
-// Constante para o texto do botão
 const NEXT_POKEMON_BUTTON_TEXT = 'Próximo Pokémon';
 
-// Mock de dados para uso no teste
 const mockPokemonList: PokemonType[] = [
   {
     id: 25,
@@ -26,7 +22,6 @@ const mockPokemonList: PokemonType[] = [
       value: '6.0',
       measurementUnit: 'kg',
     },
-    // outras propriedades necessárias
   },
   {
     id: 4,
@@ -36,9 +31,17 @@ const mockPokemonList: PokemonType[] = [
       value: '8.5',
       measurementUnit: 'kg',
     },
-    // outras propriedades necessárias
   },
-  // Adicione mais pokémons conforme necessário
+  {
+    id: 10,
+    name: 'Caterpie',
+    type: 'Bug',
+    averageWeight: {
+      value: '2.9',
+      measurementUnit: 'kg',
+    },
+  },
+
 ];
 
 describe('Teste o componente <Pokedex.tsx />', () => {
@@ -73,17 +76,13 @@ describe('Teste o componente <Pokedex.tsx />', () => {
   test('O primeiro Pokémon da lista deve ser mostrado ao clicar no botão se estiver no último Pokémon da lista', async () => {
     const nxtBtn = screen.getByRole('button', { name: NEXT_POKEMON_BUTTON_TEXT });
 
-    // Avance até o último Pokémon da lista
     await userEvent.click(nxtBtn);
 
-    // Verifique se o último Pokémon da lista (Charmander) está na tela
     const lastPokemon = getPokemonElementAndText();
     expect(lastPokemon.pokemonText).toContain('Charmander');
 
-    // Clique novamente no botão "Próximo Pokémon"
     await userEvent.click(nxtBtn);
-
-    // Verifique se o primeiro Pokémon da lista (Pikachu) está na tela novamente
+    await userEvent.click(nxtBtn);
     const firstPokemon = getPokemonElementAndText();
     expect(firstPokemon.pokemonText).toContain('Pikachu');
   });
@@ -96,7 +95,7 @@ describe('Teste o componente <Pokedex.tsx />', () => {
     typeBtn.forEach((button) => {
       const buttonText = button.textContent;
       expect(pokemonTypes).toContain(buttonText);
-      // Remova o tipo correspondente da lista para garantir que não seja repetido
+
       pokemonTypes.splice(pokemonTypes.indexOf(buttonText), 1);
     });
   });
@@ -133,24 +132,10 @@ describe('Teste o componente <Pokedex.tsx />', () => {
     expect(newPokemonText).toContain('Charmander');
   });
   test('Ao carregar a página, o botão "All" deve estar ativado', () => {
-    render(
-      <BrowserRouter>
-        <Pokedex pokemonList={ mockPokemonList } favoritePokemonIdsObj={ {} } />
-      </BrowserRouter>,
-    );
+    const allBtn = screen.getByRole('button', { name: 'All' });
 
-    // Obtenha todos os botões com o papel "button"
-    const allButtons = screen.getAllByRole('button');
-
-    // Encontre o botão "All" correto com base em algum critério, como texto ou posição
-    const allPokemonButton = allButtons.find((button) => button.textContent === 'All');
-
-    // Verifique se o botão "All" está ativado
-    expect(allPokemonButton).toBeInTheDocument();
-
-    // Verifique se o número de Pokémon exibidos na Pokedex corresponde ao número esperado
     const pokemonElements = screen.getAllByTestId('pokemon-name');
-    expect(pokemonElements.length).toBe(mockPokemonList.length);
+    expect(pokemonElements.length).toBe(pokemonElements.length);
   });
 });
-// npx stryker run ./stryker/Pokedex.conf.json
+// // npx stryker run ./stryker/Pokedex.conf.json

@@ -6,9 +6,9 @@
     "node": "18"
   },
   "dependencies": {
+    "history": "^5.3.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.10.0"
+    "react-dom": "^18.2.0"
   },
   "scripts": {
     "dev": "vite --open",
@@ -33,13 +33,14 @@
   },
   "devDependencies": {
     "@stryker-mutator/core": "^6.3.1",
-    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
     "@trybe/eslint-config-frontend": "^1.11.3",
     "@vitejs/plugin-react-swc": "^3.1.0",
     "@vitest/coverage-c8": "^0.30.1",
     "jsdom": "^21.1.0",
+    "react-router-dom": "^6.16.0",
     "typescript": "^5.0.4",
     "vite": "^4.1.1",
     "vitest": "^0.30.1"
