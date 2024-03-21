@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { Pokedex } from '../pages';
 import { PokemonType } from '../types';
 
-// Função auxiliar para obter o elemento do Pokémon e seu texto
 function getPokemonElementAndText() {
   const pokemonElement = screen.getByTestId('pokemon-name');
   const pokemonText = pokemonElement.textContent;
